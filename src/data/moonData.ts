@@ -6,7 +6,7 @@ export interface MoonMission {
   country: string;
   agency: string;
   flag: string;
-  type: 'Lander' | 'Rover' | 'Orbiter' | 'Crewed' | 'Impactor' | 'Flyby';
+  type: 'Landre' | 'Rover' | 'Orbiter' | 'Crewed' | 'Impactor' | 'Flyby';
   outcome: 'Success' | 'Partial Success' | 'Failed';
   description: string;
   objective: string;
