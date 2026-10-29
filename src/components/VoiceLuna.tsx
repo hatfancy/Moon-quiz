@@ -9,7 +9,12 @@ interface ChatMessage {
   isAudioPlaying?: boolean;
 }
 
-export const VoiceLuna: React.FC = () => {
+interface VoiceLunaProps {
+  onBack?: () => void;
+  onUserQuestion?: () => void;
+}
+
+export const VoiceLuna: React.FC<VoiceLunaProps> = ({ onUserQuestion }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -138,6 +143,7 @@ export const VoiceLuna: React.FC = () => {
 
     setMessages((prev) => [...prev, userMsg]);
     setInputQuery('');
+    onUserQuestion?.();
 
     // Simulate intelligent AI reply with slight latency
     setTimeout(() => {

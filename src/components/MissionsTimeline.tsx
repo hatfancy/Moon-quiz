@@ -5,9 +5,10 @@ import { Icon } from './Icon';
 
 interface MissionsProps {
   onBack?: () => void;
+  onMissionClick?: (missionId: string) => void;
 }
 
-export const MissionsTimeline: React.FC<MissionsProps> = () => {
+export const MissionsTimeline: React.FC<MissionsProps> = ({ onMissionClick }) => {
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedAgency, setSelectedAgency] = useState<string>('All');
@@ -136,7 +137,10 @@ export const MissionsTimeline: React.FC<MissionsProps> = () => {
                   <div
                     key={mission.id}
                     className={`timeline-node-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => setActiveMission(mission)}
+                    onClick={() => {
+                      setActiveMission(mission);
+                      onMissionClick?.(mission.id);
+                    }}
                   >
                     <div className="timeline-node-dot">
                       <span>{mission.flag}</span>
@@ -173,7 +177,10 @@ export const MissionsTimeline: React.FC<MissionsProps> = () => {
                   <div
                     key={mission.id}
                     className={`mission-compact-card ${isSelected ? 'active' : ''}`}
-                    onClick={() => setActiveMission(mission)}
+                    onClick={() => {
+                      setActiveMission(mission);
+                      onMissionClick?.(mission.id);
+                    }}
                   >
                     <div className="compact-card-header">
                       <span className="flag-circle">{mission.flag}</span>

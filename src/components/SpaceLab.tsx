@@ -3,9 +3,10 @@ import { Icon } from './Icon';
 
 interface SpaceLabProps {
   onBack?: () => void;
+  onSimInteract?: (action: string) => void;
 }
 
-export const SpaceLab: React.FC<SpaceLabProps> = () => {
+export const SpaceLab: React.FC<SpaceLabProps> = ({ onSimInteract }) => {
   const [activeOrbitSpeed, setActiveOrbitSpeed] = useState<'normal' | 'fast' | 'frozen'>('normal');
   const [selectedCelestial, setSelectedCelestial] = useState<'moon' | 'earth' | 'apollo' | 'satellite'>('moon');
   const [lunarPhase, setLunarPhase] = useState<'crescent' | 'half' | 'full' | 'new'>('full');
@@ -15,6 +16,16 @@ export const SpaceLab: React.FC<SpaceLabProps> = () => {
     if (activeOrbitSpeed === 'frozen') return '0s';
     if (activeOrbitSpeed === 'fast') return '8s';
     return '24s';
+  };
+
+  const handleSpeedChange = (spd: 'normal' | 'fast' | 'frozen') => {
+    setActiveOrbitSpeed(spd);
+    onSimInteract?.(`speed_${spd}`);
+  };
+
+  const handlePhaseChange = (phase: any) => {
+    setLunarPhase(phase);
+    onSimInteract?.(`phase_${phase}`);
   };
 
   return (
@@ -31,19 +42,19 @@ export const SpaceLab: React.FC<SpaceLabProps> = () => {
             <span className="tool-chip-label">Simulation Speed:</span>
             <button
               className={`tool-pill ${activeOrbitSpeed === 'normal' ? 'active' : ''}`}
-              onClick={() => setActiveOrbitSpeed('normal')}
+              onClick={() => handleSpeedChange('normal')}
             >
               1x Real
             </button>
             <button
               className={`tool-pill ${activeOrbitSpeed === 'fast' ? 'active' : ''}`}
-              onClick={() => setActiveOrbitSpeed('fast')}
+              onClick={() => handleSpeedChange('fast')}
             >
               4x Warp
             </button>
             <button
               className={`tool-pill ${activeOrbitSpeed === 'frozen' ? 'active' : ''}`}
-              onClick={() => setActiveOrbitSpeed('frozen')}
+              onClick={() => handleSpeedChange('frozen')}
             >
               Pause
             </button>
@@ -53,7 +64,7 @@ export const SpaceLab: React.FC<SpaceLabProps> = () => {
             <span className="tool-chip-label">Lunar Phase:</span>
             <select
               value={lunarPhase}
-              onChange={(e) => setLunarPhase(e.target.value as any)}
+              onChange={(e) => handlePhaseChange(e.target.value)}
               className="phase-selector"
             >
               <option value="full">Full Moon</option>

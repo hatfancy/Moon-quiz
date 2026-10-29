@@ -237,6 +237,58 @@ export const Icon: React.FC<IconProps> = ({ name, className = '', size = 20 }) =
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       );
+    case 'Sun':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+      );
+    case 'Trophy':
+      return (
+        <svg {...common}>
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+          <path d="M4 22h16" />
+          <path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1h10v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34" />
+          <path d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-12 0V6a2 2 0 0 1 2-2Z" />
+        </svg>
+      );
+    case 'Award':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="8" r="6" />
+          <path d="m15.48 13.98-1.5 5.52L12 18l-1.98 1.5-1.5-5.52" />
+        </svg>
+      );
+    case 'BookOpen':
+      return (
+        <svg {...common}>
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      );
+    case 'Sliders':
+      return (
+        <svg {...common}>
+          <line x1="4" x2="4" y1="21" y2="14" />
+          <line x1="4" x2="4" y1="10" y2="3" />
+          <line x1="12" x2="12" y1="21" y2="12" />
+          <line x1="12" x2="12" y1="8" y2="3" />
+          <line x1="20" x2="20" y1="21" y2="16" />
+          <line x1="20" x2="20" y1="12" y2="3" />
+          <line x1="1" x2="7" y1="14" y2="14" />
+          <line x1="9" x2="15" y1="8" y2="8" />
+          <line x1="17" x2="23" y1="16" y2="16" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>

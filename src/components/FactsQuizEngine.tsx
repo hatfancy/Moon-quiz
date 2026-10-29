@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { QUIZ_QUESTIONS, MOON_FACTS } from '../data/moonData';
 import type { QuizQuestion } from '../data/moonData';
 import { Icon } from './Icon';
+import { soundManager } from '../utils/soundEngine';
 
 interface FactsQuizProps {
   onBack?: () => void;
+  onQuizComplete?: (score: number) => void;
+  onFactExplored?: (category: string) => void;
 }
 
-export const FactsQuizEngine: React.FC<FactsQuizProps> = () => {
+export const FactsQuizEngine: React.FC<FactsQuizProps> = ({ onQuizComplete, onFactExplored }) => {
   const [activeTab, setActiveTab] = useState<'facts' | 'quiz'>('facts');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,6 +29,7 @@ export const FactsQuizEngine: React.FC<FactsQuizProps> = () => {
 
   const handleSelectOption = (index: number) => {
     if (isAnswerSubmitted) return;
+    soundManager.playNavClick();
     setSelectedAnswerIndex(index);
   };
 
@@ -33,26 +37,39 @@ export const FactsQuizEngine: React.FC<FactsQuizProps> = () => {
     if (selectedAnswerIndex === null || !currentQ) return;
     setIsAnswerSubmitted(true);
     if (selectedAnswerIndex === currentQ.correctAnswer) {
+      soundManager.playCorrect();
       setScore((prev) => prev + 1);
+    } else {
+      soundManager.playIncorrect();
     }
   };
 
   const handleNextQuestion = () => {
+    soundManager.playNavClick();
     if (currentQuestionIndex + 1 < activeQuestions.length) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setSelectedAnswerIndex(null);
       setIsAnswerSubmitted(false);
     } else {
+      soundManager.playTrophyUnlocked();
       setQuizFinished(true);
+      onQuizComplete?.(score);
     }
   };
 
   const handleRestartQuiz = () => {
+    soundManager.playNavClick();
     setCurrentQuestionIndex(0);
     setSelectedAnswerIndex(null);
     setIsAnswerSubmitted(false);
     setScore(0);
     setQuizFinished(false);
+  };
+
+  const handleFactFilter = (cat: string) => {
+    soundManager.playNavClick();
+    setActiveFactFilter(cat);
+    onFactExplored?.(cat);
   };
 
   const filteredFacts = MOON_FACTS.filter(
@@ -106,7 +123,7 @@ export const FactsQuizEngine: React.FC<FactsQuizProps> = () => {
               <button
                 key={cat}
                 className={`fact-tag-btn ${activeFactFilter === cat ? 'active' : ''}`}
-                onClick={() => setActiveFactFilter(cat)}
+                onClick={() => handleFactFilter(cat)}
               >
                 {cat}
               </button>

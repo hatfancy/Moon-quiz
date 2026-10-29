@@ -5,6 +5,7 @@
   --bg-lunar-subtle: #f5f7fb;
   --card-bg: rgba(255, 255, 255, 0.92);
   --card-border: rgba(226, 232, 240, 0.85);
+  --panel-bg: #ffffff;
   --purple-heading: #26164d;
   --purple-primary: #3b1d73;
   --purple-secondary: #582ca8;
@@ -13,9 +14,35 @@
   --yellow-hover: #e5a400;
   --text-dark: #1b1633;
   --text-muted: #5e6478;
+  --input-bg: #f8fafc;
+  --pill-bg: rgba(255, 255, 255, 0.88);
+  --pill-hover: rgba(240, 243, 250, 0.9);
+  --badge-bg: #f1f4fa;
   --shadow-soft: 0 14px 38px -10px rgba(45, 25, 90, 0.08), 0 6px 16px -6px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 22px 48px -12px rgba(59, 29, 115, 0.16), 0 10px 24px -8px rgba(0, 0, 0, 0.06);
   --radius-card: 28px;
+}
+
+[data-theme="dark"] {
+  --bg-lunar: #0b0716;
+  --bg-lunar-subtle: #120c24;
+  --card-bg: rgba(24, 16, 46, 0.88);
+  --card-border: rgba(94, 68, 150, 0.35);
+  --panel-bg: #140d2b;
+  --purple-heading: #f1ecff;
+  --purple-primary: #8552f2;
+  --purple-secondary: #9d6eff;
+  --yellow-accent: #ffb800;
+  --yellow-light: rgba(255, 184, 0, 0.15);
+  --yellow-hover: #ffc42e;
+  --text-dark: #f3f0fc;
+  --text-muted: #a49fc4;
+  --input-bg: #1d133a;
+  --pill-bg: rgba(30, 20, 58, 0.85);
+  --pill-hover: rgba(52, 34, 98, 0.85);
+  --badge-bg: rgba(48, 32, 90, 0.6);
+  --shadow-soft: 0 14px 38px -10px rgba(0, 0, 0, 0.6), 0 6px 16px -6px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 22px 48px -12px rgba(133, 82, 242, 0.28), 0 10px 24px -8px rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -170,12 +197,12 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
+  background: var(--pill-bg);
+  backdrop-filter: blur(14px);
   padding: 6px;
   border-radius: 40px;
   border: 1px solid var(--card-border);
-  box-shadow: 0 4px 16px rgba(45, 25, 90, 0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .nav-pill-btn {
@@ -195,7 +222,7 @@ body {
 
 .nav-pill-btn:hover {
   color: var(--purple-primary);
-  background: rgba(240, 243, 250, 0.8);
+  background: var(--pill-hover);
 }
 
 .nav-pill-btn.active {
@@ -390,13 +417,14 @@ body {
 
 /* Viewport Modal/Panel for deep-dive interactions */
 .feature-view-panel {
-  background: #ffffff;
+  background: var(--panel-bg);
   border-radius: 28px;
   border: 1px solid var(--card-border);
   box-shadow: var(--shadow-hover);
   padding: 36px;
   margin-bottom: 36px;
   animation: fadeInPanel 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
 }
 
 @keyframes fadeInPanel {
@@ -410,7 +438,7 @@ body {
   align-items: center;
   padding-bottom: 20px;
   margin-bottom: 24px;
-  border-bottom: 1.5px solid #edf1f7;
+  border-bottom: 1.5px solid var(--card-border);
 }
 
 .panel-header-title {
@@ -432,8 +460,8 @@ body {
   gap: 8px;
   padding: 8px 18px;
   border-radius: 14px;
-  background: #f1f4fa;
-  border: none;
+  background: var(--badge-bg);
+  border: 1px solid var(--card-border);
   font-size: 13.5px;
   font-weight: 700;
   color: var(--purple-primary);
@@ -444,6 +472,7 @@ body {
 .panel-back-btn:hover {
   background: var(--purple-primary);
   color: #ffffff;
+  border-color: var(--purple-primary);
 }
 
 /* General Buttons */
@@ -550,3 +579,426 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   Interactive Header Features: Dark Mode, Sounds & Progress
+   ========================================================= */
+
+.header-action-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Interactive Progress Pill */
+.progress-quick-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--pill-bg);
+  border: 1px solid var(--card-border);
+  padding: 6px 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  color: var(--text-dark);
+}
+
+.progress-quick-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--purple-primary);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.18);
+  background: var(--pill-hover);
+}
+
+.pill-trophy-icon {
+  color: #ffb800;
+  display: flex;
+  align-items: center;
+}
+
+.pill-progress-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.pill-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pill-pct {
+  color: var(--purple-primary);
+  font-weight: 800;
+}
+
+.pill-track {
+  width: 70px;
+  height: 5px;
+  background: rgba(140, 150, 180, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pill-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #ffb800);
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Circular Tool Action Buttons (Sound & Dark Mode) */
+.tool-icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--pill-bg);
+  border: 1px solid var(--card-border);
+  color: var(--purple-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.tool-icon-btn:hover {
+  transform: translateY(-2px);
+  color: var(--purple-primary);
+  border-color: var(--purple-primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  background: var(--pill-hover);
+}
+
+.tool-icon-btn.active-glow {
+  color: #ffb800;
+  border-color: rgba(255, 184, 0, 0.45);
+}
+
+.sound-pulse-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+/* =========================================================
+   Progress Tracker Modal (Full Interactive Passport)
+   ========================================================= */
+
+.progress-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 6, 26, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeInBackdrop 0.25s ease-out;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.progress-modal-content {
+  background: var(--panel-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  padding: 32px;
+  animation: popUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@keyframes popUpModal {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.progress-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--card-border);
+  padding-bottom: 18px;
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rank-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--badge-bg);
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trophy-gold {
+  color: #ffb800;
+}
+
+.modal-title-wrap h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--purple-heading);
+  margin: 0;
+}
+
+.rank-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.modal-close-btn {
+  background: var(--badge-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: var(--purple-primary);
+  color: #ffffff;
+  border-color: var(--purple-primary);
+}
+
+/* Progress Hero Card */
+.progress-card-hero {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.progress-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.hero-progress-label {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--purple-heading);
+}
+
+.hero-progress-pct {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: #ffb800;
+}
+
+.progress-big-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(140, 150, 180, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.progress-big-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-stats-row {
+  display: flex;
+  gap: 14px;
+}
+
+.stat-pill {
+  flex: 1;
+  background: var(--badge-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--purple-heading);
+}
+
+.stat-desc {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Checklist Stack */
+.milestones-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checklist-heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--purple-heading);
+}
+
+.milestone-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.milestone-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.milestone-item-row:hover {
+  transform: translateX(4px);
+  border-color: var(--purple-primary);
+  background: var(--pill-hover);
+}
+
+.milestone-item-row.completed {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.milestone-status-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(140, 150, 180, 0.15);
+  border: 1.5px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.milestone-status-box.done {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.bullet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(140, 150, 180, 0.4);
+}
+
+.milestone-text {
+  flex: 1;
+}
+
+.milestone-text h5 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  margin-bottom: 2px;
+}
+
+.milestone-text p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.milestone-jump-btn {
+  background: var(--badge-bg);
+  border: 1px solid var(--card-border);
+  color: var(--purple-primary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* Modal Footer */
+.progress-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1.5px solid var(--card-border);
+  padding-top: 18px;
+}
+
+.reset-progress-link {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.reset-progress-link:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+

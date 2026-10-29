@@ -1,9 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from './components/Icon';
 import { MissionsTimeline } from './components/MissionsTimeline';
 import { SpaceLab } from './components/SpaceLab';
 import { FactsQuizEngine } from './components/FactsQuizEngine';
 import { VoiceLuna } from './components/VoiceLuna';
+import { ProgressTrackerModal } from './components/ProgressTrackerModal';
+import { soundManager } from './utils/soundEngine';
+import {
+  loadUserProgress,
+  saveUserProgress,
+  calculateMilestones,
+  getCompletionPercentage,
+  defaultProgress,
+  type UserLunarProgress
+} from './utils/progressTracker';
 import {
   TimelineIllustration,
   SpaceDesignIllustration,
@@ -16,13 +26,102 @@ type ActiveView = 'home' | 'missions' | 'spacelab' | 'quiz' | 'luna';
 export function App() {
   const [activeView, setActiveView] = useState<ActiveView>('home');
 
+  // Interactive Feature 1: Dark / Light Mode with localStorage persistence
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('moon_explorer_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  });
+
+  // Interactive Feature 2: Audio & Sound Effects Toggle with Web Audio API synthesizer
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => soundManager.isEnabled());
+
+  // Interactive Feature 3: Visual Progress Tracker with dynamic milestone checklist
+  const [progress, setProgress] = useState<UserLunarProgress>(() => loadUserProgress());
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+
+  // Sync theme attribute to HTML root
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('moon_explorer_theme', theme);
+  }, [theme]);
+
+  // Sync progress updates to LocalStorage
+  useEffect(() => {
+    saveUserProgress(progress);
+  }, [progress]);
+
+  const milestones = calculateMilestones(progress);
+  const percentage = getCompletionPercentage(milestones);
+
+  const toggleTheme = () => {
+    soundManager.playThemeToggle();
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    soundManager.setEnabled(next);
+    setSoundEnabled(next);
+    if (next) {
+      soundManager.playNavClick();
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateTo = (view: ActiveView) => {
+    soundManager.playNavClick();
     setActiveView(view);
     scrollToTop();
+  };
+
+  // Progress update actions
+  const recordMissionVisit = (missionId: string) => {
+    setProgress((prev) => {
+      if (prev.visitedMissions.includes(missionId)) return prev;
+      soundManager.playNavClick();
+      return { ...prev, visitedMissions: [...prev.visitedMissions, missionId] };
+    });
+  };
+
+  const recordSimulationInteract = (action: string) => {
+    setProgress((prev) => {
+      if (prev.exploredSimulations.includes(action)) return prev;
+      return { ...prev, exploredSimulations: [...prev.exploredSimulations, action] };
+    });
+  };
+
+  const recordQuizFinished = (score: number) => {
+    setProgress((prev) => ({
+      ...prev,
+      quizCompleted: true,
+      quizScore: Math.max(prev.quizScore, score)
+    }));
+  };
+
+  const recordFactExplored = (category: string) => {
+    setProgress((prev) => {
+      if (prev.factsRead.includes(category)) return prev;
+      return { ...prev, factsRead: [...prev.factsRead, category] };
+    });
+  };
+
+  const recordLunaQuestion = () => {
+    setProgress((prev) => ({
+      ...prev,
+      lunaConversations: prev.lunaConversations + 1
+    }));
+  };
+
+  const handleResetProgress = () => {
+    setProgress(defaultProgress);
+    setIsProgressModalOpen(false);
   };
 
   return (
@@ -79,6 +178,56 @@ export function App() {
               <Icon name="Bot" size={15} /> Ask L.U.N.A.
             </button>
           </nav>
+
+          {/* Interactive Feature Cluster: Progress Tracker, Sound FX, Dark/Light Mode */}
+          <div className="header-action-cluster">
+            {/* Progress Tracker Quick Pill */}
+            <button
+              type="button"
+              className="progress-quick-pill"
+              onClick={() => {
+                soundManager.playNavClick();
+                setIsProgressModalOpen(true);
+              }}
+              title="Click to view your Exploration Progress & Astronaut Rank"
+            >
+              <div className="pill-trophy-icon">
+                <Icon name="Trophy" size={16} />
+              </div>
+              <div className="pill-progress-info">
+                <div className="pill-label-row">
+                  <span>Progress</span>
+                  <span className="pill-pct">{percentage}%</span>
+                </div>
+                <div className="pill-track">
+                  <div className="pill-fill" style={{ width: `${percentage}%` }}></div>
+                </div>
+              </div>
+            </button>
+
+            {/* Sound Effects Toggle */}
+            <button
+              type="button"
+              className={`tool-icon-btn ${soundEnabled ? 'active-glow' : ''}`}
+              onClick={toggleSound}
+              title={soundEnabled ? 'Sound Effects Enabled (Click to Mute)' : 'Sound Effects Muted (Click to Unmute)'}
+              aria-label="Toggle Sound Effects"
+            >
+              <Icon name={soundEnabled ? 'Volume2' : 'VolumeX'} size={18} />
+              {soundEnabled && <span className="sound-pulse-dot" />}
+            </button>
+
+            {/* Dark / Light Mode Toggle */}
+            <button
+              type="button"
+              className="tool-icon-btn"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to Lunar Daylight Mode' : 'Switch to Cosmic Dark Mode'}
+              aria-label="Toggle Dark / Light Mode"
+            >
+              <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} size={18} />
+            </button>
+          </div>
         </header>
 
         {/* Dynamic Main Body Content */}
@@ -236,7 +385,10 @@ export function App() {
               </div>
               <span className="hero-subtitle-badge">Searchable Archive 1959–2026+</span>
             </div>
-            <MissionsTimeline onBack={() => navigateTo('home')} />
+            <MissionsTimeline
+              onBack={() => navigateTo('home')}
+              onMissionClick={(id) => recordMissionVisit(id)}
+            />
           </section>
         )}
 
@@ -251,7 +403,10 @@ export function App() {
               </div>
               <span className="hero-subtitle-badge">Live Orbital Physics</span>
             </div>
-            <SpaceLab onBack={() => navigateTo('home')} />
+            <SpaceLab
+              onBack={() => navigateTo('home')}
+              onSimInteract={(action) => recordSimulationInteract(action)}
+            />
           </section>
         )}
 
@@ -266,7 +421,11 @@ export function App() {
               </div>
               <span className="hero-subtitle-badge">Multiple Difficulty Tiers</span>
             </div>
-            <FactsQuizEngine onBack={() => navigateTo('home')} />
+            <FactsQuizEngine
+              onBack={() => navigateTo('home')}
+              onQuizComplete={(score) => recordQuizFinished(score)}
+              onFactExplored={(cat) => recordFactExplored(cat)}
+            />
           </section>
         )}
 
@@ -281,9 +440,22 @@ export function App() {
               </div>
               <span className="hero-subtitle-badge">Speech & Audio Enabled</span>
             </div>
-            <VoiceLuna />
+            <VoiceLuna
+              onBack={() => navigateTo('home')}
+              onUserQuestion={() => recordLunaQuestion()}
+            />
           </section>
         )}
+
+        {/* Progress Tracker Modal */}
+        <ProgressTrackerModal
+          isOpen={isProgressModalOpen}
+          onClose={() => setIsProgressModalOpen(false)}
+          milestones={milestones}
+          percentage={percentage}
+          onNavigate={(module) => navigateTo(module)}
+          onResetProgress={handleResetProgress}
+        />
 
         {/* Site Footer */}
         <footer className="site-footer">
